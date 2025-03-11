@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NzWalks.CustomActionFilters;
 using NzWalks.Data;
 using NzWalks.Models.Domain;
 using NzWalks.Models.DTOs;
@@ -76,65 +77,70 @@ namespace NzWalks.Controllers
         //Post to create new region
         //Post: https://localhost:portnumber/api/regions
         [HttpPost]
+        [ValidateModel]
         public async Task<IActionResult> AddRegion([FromBody] AddRegionDTO addRegionDto) 
         {
-            //Covert the Dto to domain model
-            var regionDomainModel = new Region
-            {
-                Name = addRegionDto.Name,
-                Code = addRegionDto.Code,
-                RegionImageUrl = addRegionDto.RegionImageUrl,
-            };
+                //Covert the Dto to domain model
+                var regionDomainModel = new Region
+                {
+                    Name = addRegionDto.Name,
+                    Code = addRegionDto.Code,
+                    RegionImageUrl = addRegionDto.RegionImageUrl,
+                };
 
-            //Use domain model to create a new region
-            //await dbContext.Regions.AddAsync(regionDomainModel);
-            //await dbContext.SaveChangesAsync();
+                //Use domain model to create a new region
+                //await dbContext.Regions.AddAsync(regionDomainModel);
+                //await dbContext.SaveChangesAsync();
 
-            regionDomainModel = await regionRepository.CreateAsync(regionDomainModel);
+                regionDomainModel = await regionRepository.CreateAsync(regionDomainModel);
 
-            //Map domain model back to Dto
-            var regionDto = new RegionDTO
-            {
-                Id = regionDomainModel.Id,
-                Name = regionDomainModel.Name,
-                Code = regionDomainModel.Code,
-                RegionImageUrl = regionDomainModel.RegionImageUrl,
-            };
+                //Map domain model back to Dto
+                var regionDto = new RegionDTO
+                {
+                    Id = regionDomainModel.Id,
+                    Name = regionDomainModel.Name,
+                    Code = regionDomainModel.Code,
+                    RegionImageUrl = regionDomainModel.RegionImageUrl,
+                };
 
-            return CreatedAtAction(nameof(GetById), new { id = regionDto.Id}, regionDto);
+                return CreatedAtAction(nameof(GetById), new { id = regionDto.Id }, regionDto);
+            
         }
 
         //Update existing region
         //PUT: https://localhost:portnumber/api/regions/{id}
         [HttpPut]
         [Route("{id:Guid}")]
+        [ValidateModel]
         public async Task<IActionResult> UpdateRegion([FromRoute] Guid id, [FromBody] UpdateRegionDTO updateRegionDto)
         {
-            //Map Dto to Domain Model
-            var regionDomainModel = new Region
-            {
-                Code = updateRegionDto.Code,
-                Name = updateRegionDto.Name,
-                RegionImageUrl = updateRegionDto.RegionImageUrl
-            };
-            //var regionDomainModel = await dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
-            regionDomainModel = await regionRepository.UpdateAsync(id, regionDomainModel);
+    
+                //Map Dto to Domain Model
+                var regionDomainModel = new Region
+                {
+                    Code = updateRegionDto.Code,
+                    Name = updateRegionDto.Name,
+                    RegionImageUrl = updateRegionDto.RegionImageUrl
+                };
+                //var regionDomainModel = await dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
+                regionDomainModel = await regionRepository.UpdateAsync(id, regionDomainModel);
 
-            if (regionDomainModel == null)
-            {
-                return NotFound();
-            }
+                if (regionDomainModel == null)
+                {
+                    return NotFound();
+                }
 
-            //Map domain model back to Dto
-            var regionDto = new RegionDTO
-            {
-                Id = regionDomainModel.Id,
-                Name = regionDomainModel.Name,
-                Code = regionDomainModel.Code,
-                RegionImageUrl = regionDomainModel.RegionImageUrl,
-            };
+                //Map domain model back to Dto
+                var regionDto = new RegionDTO
+                {
+                    Id = regionDomainModel.Id,
+                    Name = regionDomainModel.Name,
+                    Code = regionDomainModel.Code,
+                    RegionImageUrl = regionDomainModel.RegionImageUrl,
+                };
 
-            return Ok(regionDto);
+                return Ok(regionDto);
+           
         }
 
         //Delete a region
