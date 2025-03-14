@@ -6,7 +6,7 @@ namespace NzWalks.Data
 {
     public class NzWalksDbContext: DbContext
     {
-        public NzWalksDbContext(DbContextOptions dbContextOptions): base(dbContextOptions)
+        public NzWalksDbContext(DbContextOptions<NzWalksDbContext> dbContextOptions): base(dbContextOptions)
         {
             
         }
