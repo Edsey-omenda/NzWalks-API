@@ -12,7 +12,6 @@ namespace NzWalks.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class RegionsController : ControllerBase
     {
         private NzWalksDbContext dbContext;
@@ -26,6 +25,7 @@ namespace NzWalks.Controllers
         //Get All Regions
         //Get: https://localhost:portnumber/api/regions
         [HttpGet]
+        [Authorize(Roles = "Reader, Writer")]
         public async Task<IActionResult> GetAll()
         {
             //Get data from database - in form of domain models
@@ -51,6 +51,7 @@ namespace NzWalks.Controllers
         //Get: https://localhost:portnumber/api/regions/{id}
         [HttpGet]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Reader, Writer")]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             //Get region from database - in form of domain models
@@ -80,6 +81,7 @@ namespace NzWalks.Controllers
         //Post: https://localhost:portnumber/api/regions
         [HttpPost]
         [ValidateModel]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> AddRegion([FromBody] AddRegionDTO addRegionDto) 
         {
                 //Covert the Dto to domain model
@@ -114,6 +116,7 @@ namespace NzWalks.Controllers
         [HttpPut]
         [Route("{id:Guid}")]
         [ValidateModel]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> UpdateRegion([FromRoute] Guid id, [FromBody] UpdateRegionDTO updateRegionDto)
         {
     
@@ -149,6 +152,7 @@ namespace NzWalks.Controllers
         //DELETE: https://localhost:portnumber/api/regions/{id}
         [HttpDelete]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Writer")]
 
         public async Task<IActionResult> DeleteRegion([FromRoute] Guid id) 
         {
